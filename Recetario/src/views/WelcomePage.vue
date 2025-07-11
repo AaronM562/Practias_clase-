@@ -37,7 +37,7 @@
             <p class="text-white-75 mb-5">
               Busca por ingredientes, calorías, tiempo de preparación y más
             </p>
-            <a class="btn btn-primary btn-xl" href="#search">Buscar Recetas</a>
+            <a class="btn btn-primary btn-xl" href="#search">Empezar</a>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@
     <section class="page-section bg-dark text-white">
       <div class="container px-4 px-lg-5 text-center">
         <h2 class="mb-4">¡Comienza a cocinar hoy mismo!</h2>
-        <a class="btn btn-light btn-xl" href="#search">Buscar Recetas</a>
+        <a class="btn btn-light btn-xl" href="/Home">Buscar Recetas</a>
       </div>
     </section>
 
@@ -146,7 +146,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import VueEasyLightbox from 'vue-easy-lightbox'
-import '../assets/styles.css'
 
 // Navbar toggle
 const navbarOpen = ref(false)
@@ -235,3 +234,6 @@ onUnmounted(() => {
   window.removeEventListener('scroll', shrinkNavbar)
 })
 </script>
+<style>
+@import '../assets/styles.css';
+</style>
