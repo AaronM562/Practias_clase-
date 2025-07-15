@@ -27,89 +27,106 @@
         <!-- Page content-->
         <div class="container">
             <div class="row">
-                <!-- Blog entries-->
+                <!-- Blog entries -->
                 <div class="col-lg-8">
-                    <!-- Featured blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://placehold.co/850x350/dee2e6/6c757d?text=Lasaña" alt="Imagen de una lasaña" /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">12 de Julio, 2025</div>
-                            <h2 class="card-title">Deliciosa Lasaña a la Boloñesa</h2>
-                            <p class="card-text">Una receta clásica que nunca falla. Capas de pasta, una rica salsa boloñesa de carne, bechamel cremosa y mucho queso parmesano. Perfecta para una comida familiar de domingo.</p>
-                            <a class="btn btn-primary" href="/Recipe">Leer más →</a>
-                        </div>
+                    <!-- Mensajes de Carga o Error -->
+                    <div v-if="isLoading" class="alert alert-info text-center">Cargando resultados...</div>
+                    <div v-if="error" class="alert alert-danger text-center">{{ error }}</div>
+                    <div v-if="!isLoading && hasSearched && recipes.length === 0" class="alert alert-warning text-center">
+                      No se encontraron recetas. Intenta con otros ingredientes.
                     </div>
-                    <!-- Nested row for non-featured blog posts-->
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <!-- Blog post-->
+
+                    <!-- Contenedor de Resultados de Búsqueda -->
+                    <div v-if="recipes.length > 0" class="row">
+                        <div v-for="hit in recipes" :key="hit.recipe.uri" class="col-lg-6">
+                            <!-- Tarjeta de Receta -->
                             <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Tacos+al+Pastor" alt="Imagen de tacos al pastor" /></a>
+                                <a :href="hit.recipe.url" target="_blank"><img class="card-img-top" :src="hit.recipe.image" :alt="`Imagen de ${hit.recipe.label}`" /></a>
                                 <div class="card-body">
-                                    <div class="small text-muted">11 de Julio, 2025</div>
-                                    <h2 class="card-title h4">Tacos al Pastor Caseros</h2>
-                                    <p class="card-text">Aprende a preparar los famosos tacos al pastor en la comodidad de tu casa. ¡El marinado es la clave!</p>
-                                    <a class="btn btn-primary" href="/Recipe">Leer más →</a>
-                                </div>
-                            </div>
-                            <!-- Blog post-->
-                            <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Pastel+de+Chocolate" alt="Imagen de un pastel de chocolate" /></a>
-                                <div class="card-body">
-                                    <div class="small text-muted">10 de Julio, 2025</div>
-                                    <h2 class="card-title h4">Pastel de Chocolate Esponjoso</h2>
-                                    <p class="card-text">La receta definitiva para un pastel de chocolate húmedo y esponjoso que todos amarán.</p>
-                                    <a class="btn btn-primary" href="/Recipe">Leer más →</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <!-- Blog post-->
-                            <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Ensalada+César" alt="Imagen de una ensalada césar" /></a>
-                                <div class="card-body">
-                                    <div class="small text-muted">9 de Julio, 2025</div>
-                                    <h2 class="card-title h4">Ensalada César con Pollo</h2>
-                                    <p class="card-text">Una opción ligera pero completa. El aderezo casero marca toda la diferencia. Ideal para un almuerzo rápido.</p>
-                                    <a class="btn btn-primary" href="/Recipe">Leer más →</a>
-                                </div>
-                            </div>
-                            <!-- Blog post-->
-                            <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Sopa+de+Tortilla" alt="Imagen de una sopa de tortilla" /></a>
-                                <div class="card-body">
-                                    <div class="small text-muted">8 de Julio, 2025</div>
-                                    <h2 class="card-title h4">Sopa de Tortilla Tradicional</h2>
-                                    <p class="card-text">Caliente y reconfortante, esta sopa es un abrazo al corazón. Acompáñala con aguacate, crema y queso.</p>
-                                    <a class="btn btn-primary" href="/Recipe">Leer más →</a>
+                                    <div class="small text-muted">Fuente: {{ hit.recipe.source }}</div>
+                                    <h2 class="card-title h4">{{ hit.recipe.label }}</h2>
+                                    <!-- Etiquetas de dieta -->
+                                    <div>
+                                        <span v-for="tag in hit.recipe.dietLabels" :key="tag" class="badge bg-success me-1 mb-2">{{ tag }}</span>
+                                    </div>
+                                    <a class="btn btn-primary" :href="hit.recipe.url" target="_blank">Ver Receta →</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Pagination-->
-                    <nav aria-label="Pagination">
-                        <hr class="my-0" />
-                        <ul class="pagination justify-content-center my-4">
-                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Nuevas</a></li>
-                            <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                            <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">Antiguas</a></li>
-                        </ul>
-                    </nav>
+
+                    <!-- Contenido Estático Inicial (se oculta después de una búsqueda exitosa) -->
+                    <div v-else-if="!hasSearched">
+                        <!-- Featured blog post-->
+                        <div class="card mb-4">
+                            <a href="#!"><img class="card-img-top" src="https://placehold.co/850x350/dee2e6/6c757d?text=Lasaña" alt="Imagen de una lasaña" /></a>
+                            <div class="card-body">
+                                <div class="small text-muted">14 de Julio, 2025</div>
+                                <h2 class="card-title">Deliciosa Lasaña a la Boloñesa</h2>
+                                <p class="card-text">Una receta clásica que nunca falla. Capas de pasta, una rica salsa boloñesa de carne, bechamel cremosa y mucho queso parmesano. Perfecta para una comida familiar de domingo.</p>
+                                <a class="btn btn-primary" href="#">Leer más →</a>
+                            </div>
+                        </div>
+                        <!-- Nested row for non-featured blog posts-->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card mb-4">
+                                    <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Tacos+al+Pastor" alt="..." /></a>
+                                    <div class="card-body">
+                                        <div class="small text-muted">11 de Julio, 2025</div>
+                                        <h2 class="card-title h4">Tacos al Pastor Caseros</h2>
+                                        <p class="card-text">Aprende a preparar los famosos tacos al pastor en la comodidad de tu casa.</p>
+                                        <a class="btn btn-primary" href="#">Leer más →</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card mb-4">
+                                    <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Ensalada+César" alt="..." /></a>
+                                    <div class="card-body">
+                                        <div class="small text-muted">9 de Julio, 2025</div>
+                                        <h2 class="card-title h4">Ensalada César con Pollo</h2>
+                                        <p class="card-text">Una opción ligera pero completa. El aderezo casero marca toda la diferencia.</p>
+                                        <a class="btn btn-primary" href="#">Leer más →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <!-- Side widgets-->
                 <div class="col-lg-4">
-                    <!-- Search widget-->
+                    <!-- Search widget (Ahora funcional) -->
                     <div class="card mb-4">
                         <div class="card-header">Buscar Receta</div>
                         <div class="card-body">
-                            <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Buscar..." aria-label="Buscar..." aria-describedby="button-search" />
-                                <button class="btn btn-primary" id="button-search" type="button">¡Vamos!</button>
+                            <div class="mb-3">
+                                <label for="ingredients" class="form-label">Ingredientes</label>
+                                <input 
+                                  id="ingredients"
+                                  v-model="searchQuery" 
+                                  @keyup.enter="fetchRecipes"
+                                  class="form-control"
+                                  type="text" 
+                                  placeholder="Ej: chicken, rice, broccoli" />
+                                <div class="form-text">Separa los ingredientes con comas. (En inglés)</div>
                             </div>
+                            <div class="mb-3">
+                                <label for="diet" class="form-label">Tipo de Dieta (Opcional)</label>
+                                <select id="diet" v-model="dietFilter" class="form-select">
+                                  <option value="">Cualquiera</option>
+                                  <option value="balanced">Balanceada</option>
+                                  <option value="high-fiber">Alta en Fibra</option>
+                                  <option value="high-protein">Alta en Proteína</option>
+                                  <option value="low-carb">Baja en Carbohidratos</option>
+                                  <option value="low-fat">Baja en Grasa</option>
+                                  <option value="low-sodium">Baja en Sodio</option>
+                                </select>
+                            </div>
+                            <button @click="fetchRecipes" :disabled="isLoading" class="btn btn-primary w-100">
+                                {{ isLoading ? 'Buscando...' : 'Buscar Recetas' }}
+                            </button>
                         </div>
                     </div>
                     <!-- Categories widget-->
@@ -134,11 +151,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Side widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Tip de la Semana</div>
-                        <div class="card-body">Para que tus pasteles queden más esponjosos, asegúrate de que todos los ingredientes estén a temperatura ambiente antes de empezar a mezclar.</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -150,5 +162,63 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import axios from 'axios';
 
+const searchQuery = ref('');
+const dietFilter = ref('');
+const recipes = ref([]);
+const isLoading = ref(false);
+const error = ref(null);
+const hasSearched = ref(false);
+
+// URL del backend.
+const backendUrl = 'http://localhost:3000/api/recipes';
+
+// --- Lógica de la Aplicación ---
+const fetchRecipes = async () => {
+  if (!searchQuery.value.trim()) {
+    error.value = 'Por favor, introduce al menos un ingrediente.';
+    return;
+  }
+  
+  isLoading.value = true;
+  error.value = null;
+  recipes.value = [];
+  hasSearched.value = true;
+
+  try {
+    // Construir los parámetros para la petición al backend
+    const params = {
+      ingredients: searchQuery.value.trim(),
+    };
+    if (dietFilter.value) {
+      params.diet = dietFilter.value;
+    }
+
+    // Hacemos la llamada a nuestro propio servidor
+    const response = await axios.get(backendUrl, { params });
+    
+    // La API de Edamam devuelve los resultados dentro de la propiedad "hits"
+    recipes.value = response.data.hits;
+
+  } catch (err) {
+    console.error('Error al obtener recetas:', err);
+    error.value = 'No se pudieron obtener las recetas. Revisa que el servidor esté funcionando o intenta más tarde.';
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
+
+<style scoped>
+.card-img-top {
+    width: 100%;
+    height: 225px;
+    object-fit: cover;
+}
+
+.form-label {
+    font-weight: bold;
+}
+</style>
