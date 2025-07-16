@@ -11,7 +11,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 require('dotenv').config();
-const { translate } = require('google-translate-api-browser');
+const { translate } = require('@vitalets/google-translate-api');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,35 +78,23 @@ app.get('/api/recipes', async (req, res) => {
     const originalHits = response.data.hits;
     
     if (originalHits.length === 0) {
-        console.log('Edamam no devolvió resultados. Enviando respuesta vacía.');
+        console.log('Edamam no devolvió resultados.');
         return res.status(200).json(response.data);
     }
     
-    const translatedHits = await Promise.all(
-      originalHits.map(async (hit) => {
-        const recipe = hit.recipe;
-
-        // Traducir el título de la receta
-        const translatedLabelObj = await translate(recipe.label, { to: 'es' });
-        
-        // Devolvemos el objeto de la receta con los campos ya traducidos
+    // Traducción de títulos de recetas
+    const allLabels = originalHits.map(hit => hit.recipe.label).join('\n');
+    const translatedBlock = await translate(allLabels, { to: 'es' });
+    const translatedLabels = translatedBlock.text.split('\n');
+    const translatedHits = originalHits.map((hit, index) => {
         return {
-          ...hit, // Mantenemos los datos originales (URL, imagen, etc.)
-          recipe: {
-            ...recipe,
-            label: translatedLabelObj.text, // Usamos el texto traducido
-            /*
-            ingredientLines: await Promise.all(
-              recipe.ingredientLines.map(async (line) => {
-                const translatedLineObj = await translate(line, { to: 'es' });
-                return translatedLineObj.text;
-              })
-            ),
-            */
-          },
+            ...hit,
+            recipe: {
+                ...hit.recipe,
+                label: translatedLabels[index] || hit.recipe.label
+            }
         };
-      })
-    );
+    });
 
     // Creamos un nuevo objeto de respuesta con los datos traducidos
     const finalResponse = {
