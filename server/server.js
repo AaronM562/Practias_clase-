@@ -25,7 +25,6 @@ const EDAMAM_ACCOUNT_USER = process.env.EDAMAM_ACCOUNT_USER;
 const API_BASE_URL = 'https://api.edamam.com/api/recipes/v2';
 
 // --- Ruta Principal de la API ---
-// GET http://localhost:3000/api/recipes?ingredients=chicken,rice&diet=low-fat
 app.get('/api/recipes', async (req, res) => {
   // Validar que las credenciales están configuradas
   if (!APP_ID || !APP_KEY || !EDAMAM_ACCOUNT_USER) {
@@ -37,7 +36,10 @@ app.get('/api/recipes', async (req, res) => {
   // --- Obtener parámetros de la consulta del cliente ---
   const {
     ingredients,
-    diet
+    diet,
+    health,
+    dishType,
+    excluded
   } = req.query;
 
   if (!ingredients) {
@@ -48,11 +50,11 @@ app.get('/api/recipes', async (req, res) => {
 
   // --- Realizar la petición a la API de Edamam ---
   try {
-    // --- PASO DE TRADUCCIÓN (ES -> EN) ---
+    // --- PASO DE TRADUCCIÓN (Ingredientes Principales) ---
     const translationResult = await translate(ingredients, { to: 'en' });
     const ingredientsInEnglish = translationResult.text;
+
     // --- Construir la URL de la API de Edamam ---
-    // Documentación de parámetros: https://developer.edamam.com/recipe-search-api-v2-documentation
     const params = {
       type: 'public',
       q: ingredientsInEnglish,
@@ -60,14 +62,33 @@ app.get('/api/recipes', async (req, res) => {
       app_key: APP_KEY
     };
 
-    // Añadir el filtro de dieta solo si se proporciona
-    if (diet) {
-      params.diet = diet;
+    // Añadir filtros opcionales
+    if (diet) params.diet = diet;
+
+    if (dishType) params.dishType = dishType;
+    
+    if (Array.isArray(health)) {
+      params.health = health;
+    } else if (typeof health === 'string') {
+      params.health = [health];
+    }
+
+    if (excluded) {
+      const excludedArray = Array.isArray(excluded) ? excluded : [excluded];
+      const translatedExclusions = await Promise.all(
+        excludedArray.map(item => translate(item, { to: 'en' }))
+      );
+
+      params.excluded = translatedExclusions.map(t => t.text.toLowerCase());
     }
 
     console.log(`Buscando recetas con los parámetros:`, params);
     const response = await axios.get(API_BASE_URL, {
       params,
+      paramsSerializer: (params) => {
+        const qs = require('qs');
+        return qs.stringify(params, { arrayFormat: 'repeat' });
+      },
       headers: {
         'Accept-Language': 'en',
         'accept': 'application/json',

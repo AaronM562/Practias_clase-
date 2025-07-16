@@ -59,35 +59,35 @@
                     <div v-else-if="!hasSearched">
                         <!-- Featured blog post-->
                         <div class="card mb-4">
-                            <a href="#!"><img class="card-img-top" src="https://placehold.co/850x350/dee2e6/6c757d?text=Lasaña" alt="Imagen de una lasaña" /></a>
+                            <a href="#!"><img class="card-img-top" src="https://www.recetasdesbieta.com/wp-content/uploads/2018/10/lasagna-original..jpg" alt="Imagen de una lasaña" /></a>
                             <div class="card-body">
                                 <div class="small text-muted">14 de Julio, 2025</div>
                                 <h2 class="card-title">Deliciosa Lasaña a la Boloñesa</h2>
                                 <p class="card-text">Una receta clásica que nunca falla. Capas de pasta, una rica salsa boloñesa de carne, bechamel cremosa y mucho queso parmesano. Perfecta para una comida familiar de domingo.</p>
-                                <a class="btn btn-primary" href="#">Leer más →</a>
+                                <a class="btn btn-primary" target="_blank" href="https://laroussecocina.mx/receta/lasana-a-la-bolonesa/">Leer más →</a>
                             </div>
                         </div>
                         <!-- Nested row for non-featured blog posts-->
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="card mb-4">
-                                    <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Tacos+al+Pastor" alt="..." /></a>
+                                    <a href="#!"><img class="card-img-top" src="https://lastaquerias.com/wp-content/uploads/2022/11/tacos-pastor-gaacc26fa8_1920-1440x1440.jpg" alt="..." /></a>
                                     <div class="card-body">
                                         <div class="small text-muted">11 de Julio, 2025</div>
                                         <h2 class="card-title h4">Tacos al Pastor Caseros</h2>
                                         <p class="card-text">Aprende a preparar los famosos tacos al pastor en la comodidad de tu casa.</p>
-                                        <a class="btn btn-primary" href="#">Leer más →</a>
+                                        <a class="btn btn-primary" target="_blank" href="https://www.mexicoenmicocina.com/receta-tacos-al-pastor/#recipe">Leer más →</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="card mb-4">
-                                    <a href="#!"><img class="card-img-top" src="https://placehold.co/700x350/dee2e6/6c757d?text=Ensalada+César" alt="..." /></a>
+                                    <a href="#!"><img class="card-img-top" src="https://www.recetassinlactosa.com/wp-content/uploads/2022/02/Ensalada-Cesar.jpg" alt="..." /></a>
                                     <div class="card-body">
                                         <div class="small text-muted">9 de Julio, 2025</div>
                                         <h2 class="card-title h4">Ensalada César con Pollo</h2>
                                         <p class="card-text">Una opción ligera pero completa. El aderezo casero marca toda la diferencia.</p>
-                                        <a class="btn btn-primary" href="#">Leer más →</a>
+                                        <a class="btn btn-primary" target="_blank" href="https://www.directoalpaladar.com/recetas-de-ensaladas/ensalada-cesar-con-pollo-version-actual-de-este-plato-unico-ideal-para-la-cena">Leer más →</a>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
 
                 <!-- Side widgets-->
                 <div class="col-lg-4">
-                    <!-- Search widget (Ahora funcional) -->
+                    <!-- Search widget -->
                     <div class="card mb-4">
                         <div class="card-header">Buscar Receta</div>
                         <div class="card-body">
@@ -109,8 +109,59 @@
                                   @keyup.enter="fetchRecipes"
                                   class="form-control"
                                   type="text" 
-                                  placeholder="Ej: chicken, rice, broccoli" />
-                                <div class="form-text">Separa los ingredientes con comas. (En inglés)</div>
+                                  placeholder="Ej: pollo, arroz, brócoli" />
+                                <div class="form-text">Separa los ingredientes con comas.</div>
+                            </div>
+                            <!-- Health Labels -->
+                            <div class="mb-3">
+                                <label class="form-label">Etiquetas de Salud (Opcional)</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="vegetarian" id="vegetarian" v-model="healthLabels">
+                                            <label class="form-check-label" for="vegetarian">Vegetariana</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="vegan" id="vegan" v-model="healthLabels">
+                                            <label class="form-check-label" for="vegan">Vegana</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="gluten-free" id="gluten-free" v-model="healthLabels">
+                                            <label class="form-check-label" for="gluten-free">Sin Gluten</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="dairy-free" id="dairy-free" v-model="healthLabels">
+                                            <label class="form-check-label" for="dairy-free">Sin Lácteos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dish Type -->
+                            <div class="mb-3">
+                                <label for="dishType" class="form-label">Tipo de Plato (Opcional)</label>
+                                <select id="dishType" v-model="dishTypeFilter" class="form-select">
+                                    <option value="">Cualquiera</option>
+                                    <option value="Main course">Plato Principal</option>
+                                    <option value="Desserts">Postres</option>
+                                    <option value="Soup">Sopas</option>
+                                    <option value="Salad">Ensaladas</option>
+                                    <option value="Starter">Entrantes</option>
+                                    <option value="Drinks">Bebidas</option>
+                                </select>
+                            </div>
+                            <!-- Ingredientes a Excluir -->
+                            <div class="mb-3">
+                                <label for="excluded" class="form-label">Ingredientes a Excluir (Opcional)</label>
+                                <input 
+                                id="excluded"
+                                v-model="excludedIngredients" 
+                                @keyup.enter="fetchRecipes"
+                                class="form-control"
+                                type="text" 
+                                placeholder="Ej: nueces, mariscos" />
+                                <div class="form-text">Separa los ingredientes con comas.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="diet" class="form-label">Tipo de Dieta (Opcional)</label>
@@ -129,28 +180,6 @@
                             </button>
                         </div>
                     </div>
-                    <!-- Categories widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Categorías</div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">Pastas</a></li>
-                                        <li><a href="#!">Postres</a></li>
-                                        <li><a href="#!">Ensaladas</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">Sopas</a></li>
-                                        <li><a href="#!">Carnes</a></li>
-                                        <li><a href="#!">Vegetariano</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -167,6 +196,9 @@ import axios from 'axios';
 
 const searchQuery = ref('');
 const dietFilter = ref('');
+const healthLabels = ref([]); 
+const dishTypeFilter = ref('');
+const excludedIngredients = ref('');
 const recipes = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
@@ -175,36 +207,60 @@ const hasSearched = ref(false);
 // URL del backend.
 const backendUrl = 'http://localhost:3000/api/recipes';
 
-// --- Lógica de la Aplicación ---
 const fetchRecipes = async () => {
+  // Validación inicial
   if (!searchQuery.value.trim()) {
     error.value = 'Por favor, introduce al menos un ingrediente.';
+    recipes.value = [];
+    hasSearched.value = false;
     return;
   }
   
+  // Reseteo de estados para una nueva búsqueda
   isLoading.value = true;
   error.value = null;
   recipes.value = [];
   hasSearched.value = true;
 
   try {
-    // Construir los parámetros para la petición al backend
+    // --- CONSTRUCCIÓN DE PARÁMETROS ---
     const params = {
       ingredients: searchQuery.value.trim(),
     };
+
+    // Añadimos los filtros solo si tienen un valor.
     if (dietFilter.value) {
       params.diet = dietFilter.value;
     }
+    
+    if (healthLabels.value.length > 0) {
+      params.health = healthLabels.value;
+    }
+    
+    if (dishTypeFilter.value) {
+      params.dishType = dishTypeFilter.value;
+    }
 
-    // Hacemos la llamada a nuestro propio servidor
+    if (excludedIngredients.value.trim()) {
+      const excludedItems = excludedIngredients.value
+        .split(',')
+        .map(item => item.trim())
+        .filter(item => item);
+      
+      if (excludedItems.length > 0) {
+        params.excluded = excludedItems;
+      }
+    }
+
+    // Hacemos la llamada al servidor con los parámetros construidos.
     const response = await axios.get(backendUrl, { params });
     
-    // La API de Edamam devuelve los resultados dentro de la propiedad "hits"
-    recipes.value = response.data.hits;
+    recipes.value = response.data.hits || [];
 
   } catch (err) {
     console.error('Error al obtener recetas:', err);
     error.value = 'No se pudieron obtener las recetas. Revisa que el servidor esté funcionando o intenta más tarde.';
+    recipes.value = [];
   } finally {
     isLoading.value = false;
   }
