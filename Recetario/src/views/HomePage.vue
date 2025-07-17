@@ -8,9 +8,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Acerca de</a></li>
                         <li class="nav-item"><a class="nav-link" href="#!">Contacto</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Recetas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/" v-on:click="logout">Cerrar sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -193,6 +193,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { logout } from "../services/authService";
 
 const searchQuery = ref('');
 const dietFilter = ref('');
